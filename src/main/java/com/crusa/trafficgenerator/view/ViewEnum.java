@@ -1,2 +1,5 @@
-package com.crusa.trafficgenerator.view;public class Views {
+package com.crusa.trafficgenerator.view;
+
+public enum ViewEnum {
+    HOME, CLIENT, SERVER
 }

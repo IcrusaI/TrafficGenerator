@@ -1,5 +1,7 @@
 package com.crusa.trafficgenerator;
 
+import java.util.Arrays;
+
 public enum TypeProtocol {
     TCP("TCP"),
     UDP("UDP");
@@ -14,4 +16,7 @@ public enum TypeProtocol {
         return name;
     }
 
+    public static String[] names() {
+        return Arrays.toString(TypeProtocol.values()).replaceAll("^.|.$", "").split(", ");
+    }
 }

@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="$CONTROLLER_NAME$"
-            prefHeight="400.0" prefWidth="600.0" >
-
+<AnchorPane minHeight="100.0" minWidth="150.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.crusa.trafficgenerator.view.ClientViewController">
+    <ToolBar prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <Button mnemonicParsing="false" onAction="#backToHome" text="Назад" />
+        <Pane HBox.hgrow="ALWAYS" />
+        <AnchorPane prefHeight="25.0" prefWidth="64.0">
+            <Button fx:id="stopButton" defaultButton="true" mnemonicParsing="false" onAction="#stopGenerator" text="Остановить" />
+            <Button fx:id="startButton" defaultButton="true" mnemonicParsing="false" onAction="#startGenerator" prefHeight="25.0" prefWidth="80.0" text="Запустить" />
+        </AnchorPane>
+    </ToolBar>
+    <VBox AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
+        <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0">
+            <Label contentDisplay="RIGHT" text="Адрес">
+                <graphic>
+                    <TextField fx:id="addressText" prefHeight="25.0" prefWidth="130.0" promptText="127.0.0.1:5555" />
+                </graphic>
+            </Label>
+        </AnchorPane>
+        <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0">
+            <Label contentDisplay="RIGHT" text="Размер">
+                <graphic>
+                    <TextField fx:id="sizeText" prefHeight="25.0" prefWidth="71.0" promptText="32" />
+                </graphic>
+            </Label>
+            <Text layoutX="122.0" layoutY="17.0" text="байт" wrappingWidth="74.94921875" />
+        </AnchorPane>
+        <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0">
+            <Label contentDisplay="RIGHT" text="Время генерации">
+                <graphic>
+                    <TextField fx:id="delayText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
+                </graphic>
+            </Label>
+            <Text layoutX="180.0" layoutY="17.0" text="мс" wrappingWidth="74.94921875" />
+        </AnchorPane>
+        <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0">
+            <Label contentDisplay="RIGHT" text="Тип">
+                <graphic>
+                    <ComboBox fx:id="typeCombobox" prefWidth="150.0" promptText="Выберите тип..." />
+                </graphic>
+            </Label>
+        </AnchorPane>
+    </VBox>
+   <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="200.0">
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Результат:" textAlignment="CENTER">
+            <VBox.margin>
+               <Insets />
+            </VBox.margin>
+            <font>
+               <Font size="15.0" />
+            </font>
+         </Text>
+         <AnchorPane prefHeight="32.0" prefWidth="270.0">
+             <Label contentDisplay="RIGHT" text="Отправлено">
+                 <graphic>
+                     <TextField fx:id="sentPackagesText" editable="false" prefHeight="25.0" prefWidth="71.0" />
+                 </graphic>
+             </Label>
+             <Text layoutX="153.0" layoutY="18.0" text="пакетов" wrappingWidth="74.94921875" />
+         </AnchorPane>
+   </VBox>
 </AnchorPane>
