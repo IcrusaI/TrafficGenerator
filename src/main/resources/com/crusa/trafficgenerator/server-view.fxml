@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.text.Text?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
 <AnchorPane minHeight="100.0" minWidth="150.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.crusa.trafficgenerator.view.ServerViewController">
    <ToolBar prefHeight="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
       <Button mnemonicParsing="false" onAction="#backToHome" text="Назад" />
@@ -48,5 +47,20 @@
          </Label>
          <Text layoutX="153.0" layoutY="18.0" text="пакетов" wrappingWidth="74.94921875" />
       </AnchorPane>
+      <AnchorPane prefHeight="32.0" prefWidth="270.0">
+         <Label contentDisplay="RIGHT" text="Размер">
+            <graphic>
+               <TextField fx:id="sizePackagesText" editable="false" prefHeight="25.0" prefWidth="71.0" />
+            </graphic>
+         </Label>
+         <Text layoutX="153.0" layoutY="18.0" text="байт" wrappingWidth="74.94921875" />
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
+      </AnchorPane>
+      <TextArea fx:id="logTextArea" editable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin></TextArea>
    </VBox>
 </AnchorPane>

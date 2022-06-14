@@ -1,17 +1,18 @@
 package com.crusa.trafficgenerator.view;
 
-import com.crusa.trafficgenerator.ClientTraffic;
+import com.crusa.trafficgenerator.ReceiverReport;
+import com.crusa.trafficgenerator.SenderReport;
 import com.crusa.trafficgenerator.ServerTraffic;
-import com.crusa.trafficgenerator.TypeProtocol;
+import com.crusa.trafficgenerator.protocol.TypeProtocol;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ServerViewController extends ViewController {
     @FXML
@@ -26,16 +27,16 @@ public class ServerViewController extends ViewController {
     @FXML
     private ComboBox<String> protocolCombobox;
 
+    @FXML
+    private TextField receivedPackagesText;
+
+    @FXML
+    private TextField sizePackagesText;
+
+    @FXML
+    private TextArea logTextArea;
 
     private ServerTraffic serverTraffic;
-
-    public ServerViewController() {
-        serverTraffic = new ServerTraffic();
-
-        serverTraffic.setPort(55);
-        serverTraffic.setProtocol(TypeProtocol.UDP);
-        serverTraffic.run();
-    }
 
     @Override
     protected void start() {
@@ -73,7 +74,9 @@ public class ServerViewController extends ViewController {
     private void stopReceiver() {
         setStartReceiver(false);
 
-        serverTraffic.destroy();
+        if (serverTraffic != null) {
+            serverTraffic.destroy();
+        }
         serverTraffic = null;
         System.gc();
     }
@@ -98,6 +101,47 @@ public class ServerViewController extends ViewController {
         serverTraffic = traffic;
 
         serverTraffic.run();
+
+        taskUpdateStatistic();
+    }
+
+    private void taskUpdateStatistic() {
+        Runnable task = () -> {
+
+            synchronized(serverTraffic.getReport()) {
+                try {
+                    ReceiverReport report = serverTraffic.getReport();
+
+                    while (true) {
+                        report.wait();
+
+                        Platform.runLater(() -> {
+                            receivedPackagesText
+                                    .setText(Integer.toString(report.getTotalReceive()));
+
+                            sizePackagesText
+                                    .setText(Integer.toString(report.getTotalSizeData()));
+
+                            List<String> log = new ArrayList<>(report.getLog());
+
+                            Collections.reverse(log);
+
+                            logTextArea.setText(log
+                                    .stream().map(Object::toString)
+                                    .collect(Collectors.joining("\n")));
+                        });
+                    }
+
+                } catch(InterruptedException e) {
+                    System.out.println("interrupted");
+                }
+            }
+            // После оповещения нас мы будем ждать, пока сможем взять лок
+            System.out.println("thread");
+        };
+
+        Thread taskThread = new Thread(task);
+        taskThread.start();
     }
 
     @FXML

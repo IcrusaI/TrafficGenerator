@@ -1,7 +1,9 @@
 package com.crusa.trafficgenerator.view;
 
 import com.crusa.trafficgenerator.ClientTraffic;
-import com.crusa.trafficgenerator.TypeProtocol;
+import com.crusa.trafficgenerator.SenderReport;
+import com.crusa.trafficgenerator.protocol.TypeProtocol;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -10,6 +12,8 @@ import javafx.scene.control.TextField;
 
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ClientViewController extends ViewController {
     @FXML
@@ -25,6 +29,9 @@ public class ClientViewController extends ViewController {
     private TextField sizeText;
 
     @FXML
+    private TextField workingTimeText;
+
+    @FXML
     private TextField delayText;
 
     @FXML
@@ -34,8 +41,6 @@ public class ClientViewController extends ViewController {
     private TextField sentPackagesText;
 
     private ClientTraffic clientTraffic;
-
-    public ClientViewController() {}
 
     @Override
     protected void start() {
@@ -79,6 +84,7 @@ public class ClientViewController extends ViewController {
         startButton.setVisible(!startGenerator);
         sizeText.setDisable(startGenerator);
         delayText.setDisable(startGenerator);
+        workingTimeText.setDisable(startGenerator);
         typeCombobox.setDisable(startGenerator);
         addressText.setDisable(startGenerator);
         sentPackagesText.setText("0");
@@ -88,8 +94,10 @@ public class ClientViewController extends ViewController {
     private void stopGenerator() {
         setStartGenerator(false);
 
-        clientTraffic.destroy();
-        clientTraffic = null;
+        if (clientTraffic != null) {
+            clientTraffic.destroy();
+            clientTraffic = null;
+        }
         System.gc();
     }
 
@@ -121,7 +129,60 @@ public class ClientViewController extends ViewController {
         traffic.setSize(Integer.parseInt(sizeText.getText()));
         clientTraffic = traffic;
 
+        if (Integer.parseInt(workingTimeText.getText()) > 0) {
+            timerToStop();
+        }
+
         clientTraffic.run();
+
+        taskUpdateStatistic();
+    }
+
+    private void timerToStop() {
+        Timer timer = new Timer();
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int time = Integer.parseInt(workingTimeText.getText());
+
+            public void run() {
+                time--;
+
+
+                Platform.runLater(() -> workingTimeText.setText(Integer.toString(time)));
+
+                if (time <= 0 || isStartGenerator()) {
+                    stopGenerator();
+                    timer.cancel();
+                    timer.purge();
+                    return;
+                }
+            }
+        }, 0, 1);
+    }
+
+    private void taskUpdateStatistic() {
+        Runnable task = () -> {
+
+            synchronized(clientTraffic.getReport()) {
+                try {
+                    SenderReport report = clientTraffic.getReport();
+
+                    while (true) {
+                        report.wait();
+
+                        Platform.runLater(() -> sentPackagesText
+                                .setText(Integer.toString(report.getTotalSend())));
+                    }
+                } catch(InterruptedException e) {
+                    System.out.println("interrupted");
+                }
+            }
+            // После оповещения нас мы будем ждать, пока сможем взять лок
+            System.out.println("thread");
+        };
+
+        Thread taskThread = new Thread(task);
+        taskThread.start();
     }
 
     @FXML

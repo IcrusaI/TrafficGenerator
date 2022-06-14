@@ -1,5 +1,8 @@
 package com.crusa.trafficgenerator;
 
+import com.crusa.trafficgenerator.protocol.TypeProtocol;
+import com.crusa.trafficgenerator.protocol.UDP.UDPReceiver;
+
 import java.io.*;
 import java.net.*;
 
@@ -7,6 +10,8 @@ public class ServerTraffic {
     private int port;
     private Thread thread;
     private TypeProtocol protocol;
+
+    private ReceiverReport report;
 
     public void setPort(int port) {
         this.port = port;
@@ -16,29 +21,34 @@ public class ServerTraffic {
         this.protocol = protocol;
     }
 
+    public synchronized ReceiverReport getReport() {
+        return report;
+    }
+
     public void run() {
+        report = new ReceiverReport();
+
         switch (protocol) {
             case UDP -> UDP();
             case TCP -> TCP();
         }
-    }
 
-    public void TCP() {
-        TCPSocket tcpSocket = new TCPSocket();
-        tcpSocket.setPort(port);
-
-        Thread myThready = new Thread(tcpSocket);
-        myThready.start();
+        thread.start();
     }
 
     public void UDP() {
-
         UDPReceiver udpReceiver = new UDPReceiver();
         udpReceiver.setPort(port);
+        udpReceiver.setReport(report);
 
         thread = new Thread(udpReceiver);
+    }
 
-        thread.start();
+    public void TCP() {
+        TCPReceiver tcpReceiver = new TCPReceiver();
+        tcpReceiver.setPort(port);
+
+        thread = new Thread(tcpReceiver);
     }
 
     public void destroy() {
@@ -46,13 +56,13 @@ public class ServerTraffic {
     }
 }
 
-class TCPSocket implements Runnable {
+class TCPReceiver implements Runnable {
     int port;
     ServerSocket serverSocket;
 
-    public TCPSocket() {}
+    public TCPReceiver() {}
 
-    public TCPSocket(int port) {
+    public TCPReceiver(int port) {
         this.port = port;
     }
 
@@ -110,34 +120,3 @@ class TCPSocket implements Runnable {
     }
 }
 
-class UDPReceiver implements Runnable {
-    private int port;
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public void run() {
-        try {
-            DatagramSocket serverSocket = new DatagramSocket(port);
-            byte[] receiveData = new byte[8];
-            String sendString = "polo";
-            byte[] sendData = sendString.getBytes("UTF-8");
-
-            System.out.printf("Listening on udp:%s:%d%n",
-                    InetAddress.getLocalHost().getHostAddress(), port);
-            DatagramPacket receivePacket = new DatagramPacket(receiveData,
-                    receiveData.length);
-
-            while(true)
-            {
-                serverSocket.receive(receivePacket);
-                String sentence = new String(receiveData);
-                System.out.println("RECEIVED: " + sentence);
-            }
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-        // should close serverSocket in finally block
-    }
-}

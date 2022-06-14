@@ -1,4 +1,4 @@
-package com.crusa.trafficgenerator;
+package com.crusa.trafficgenerator.protocol;
 
 import java.util.Arrays;
 

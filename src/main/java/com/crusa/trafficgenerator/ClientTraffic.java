@@ -1,14 +1,13 @@
 package com.crusa.trafficgenerator;
 
-import java.io.*;
-import java.lang.invoke.MethodHandle;
-import java.lang.reflect.Method;
-import java.net.*;
-import java.security.SecureRandom;
-import java.util.EventListener;
+import com.crusa.trafficgenerator.protocol.TCP.TCPSender;
+import com.crusa.trafficgenerator.protocol.TypeProtocol;
+import com.crusa.trafficgenerator.protocol.UDP.UDPSender;
 
-import static java.lang.Thread.currentThread;
-import static java.lang.Thread.sleep;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.SecureRandom;
 
 public class ClientTraffic {
     private InetAddress address;
@@ -18,6 +17,8 @@ public class ClientTraffic {
     private TypeProtocol protocol;
 
     private Thread thread;
+
+    private SenderReport report;
 
     public void setAddress(String address) throws UnknownHostException {
         this.address = InetAddress.getByName(address);
@@ -39,11 +40,20 @@ public class ClientTraffic {
         this.protocol = protocol;
     }
 
+    public synchronized SenderReport getReport() {
+        return report;
+    }
+
     public void run() {
+        report = new SenderReport();
+
         switch (protocol) {
             case UDP -> UDP();
             case TCP -> TCP();
         }
+
+
+        thread.start();
     }
 
     public void UDP()  {
@@ -56,29 +66,25 @@ public class ClientTraffic {
         UDPSender udpSender = new UDPSender();
         udpSender.setDelay(delay);
         udpSender.setPacket(packet);
+        udpSender.setReport(report);
 
         thread = new Thread(udpSender);
-
-        thread.start();
     }
 
 
     private void TCP() {
-       /* //создаем сокет
-        Socket clientSocket = new Socket("localhost", 4444);
+        byte[] buffer = generateBuffer(size);
 
-        clientSocket.setSendBufferSize(32);
+        DatagramPacket packet = new DatagramPacket(
+                buffer, size, address, port
+        );
 
-        OutputStream outputStream = clientSocket.getOutputStream();
-        PrintWriter out = new PrintWriter(outputStream, true);
-        out.write(32);
-        out.flush();
+        TCPSender tcpSender = new TCPSender();
+        tcpSender.setDelay(delay);
+        tcpSender.setPacket(packet);
+        tcpSender.setReport(report);
 
-        InputStream inputStream = clientSocket.getInputStream();
-        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-        String answer = in.readLine();
-
-        clientSocket.close();*/
+        thread = new Thread(tcpSender);
     }
 
     public void destroy() {
@@ -94,43 +100,3 @@ public class ClientTraffic {
     }
 }
 
-class UDPSender implements Runnable {
-    private int delay;
-    private DatagramPacket packet;
-
-    private Method listener;
-
-    public void setPacket(DatagramPacket packet) {
-        this.packet = packet;
-    }
-
-    public void setDelay(int delay) {
-        this.delay = delay;
-    }
-
-    public void setListener(Method listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            DatagramSocket datagramSocket = null;
-
-            try {
-                datagramSocket = new DatagramSocket();
-                datagramSocket.send(packet);
-/*
-                if (listener != null) {
-                    listener(packet);
-                }*/
-
-                Thread.sleep(delay);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException exit) {
-                break;
-            }
-        }
-    }
-}
