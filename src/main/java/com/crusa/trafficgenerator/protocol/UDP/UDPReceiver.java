@@ -1,14 +1,12 @@
 package com.crusa.trafficgenerator.protocol.UDP;
 
-import com.crusa.trafficgenerator.ReceiverReport;
-import com.crusa.trafficgenerator.SenderReport;
+import com.crusa.trafficgenerator.entity.ReceiverReport;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class UDPReceiver implements Runnable {
     private int port;

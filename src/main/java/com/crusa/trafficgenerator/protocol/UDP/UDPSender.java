@@ -1,6 +1,6 @@
 package com.crusa.trafficgenerator.protocol.UDP;
 
-import com.crusa.trafficgenerator.SenderReport;
+import com.crusa.trafficgenerator.entity.SenderReport;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

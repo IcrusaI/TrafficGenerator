@@ -1,5 +1,6 @@
-package com.crusa.trafficgenerator;
+package com.crusa.trafficgenerator.controller;
 
+import com.crusa.trafficgenerator.entity.SenderReport;
 import com.crusa.trafficgenerator.protocol.TCP.TCPSender;
 import com.crusa.trafficgenerator.protocol.TypeProtocol;
 import com.crusa.trafficgenerator.protocol.UDP.UDPSender;

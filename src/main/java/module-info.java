@@ -13,4 +13,8 @@ module com.crusa.trafficgenerator {
     opens com.crusa.trafficgenerator.protocol.TCP to javafx.fxml;
     exports com.crusa.trafficgenerator.protocol;
     opens com.crusa.trafficgenerator.protocol to javafx.fxml;
+    exports com.crusa.trafficgenerator.controller;
+    opens com.crusa.trafficgenerator.controller to javafx.fxml;
+    exports com.crusa.trafficgenerator.entity;
+    opens com.crusa.trafficgenerator.entity to javafx.fxml;
 }

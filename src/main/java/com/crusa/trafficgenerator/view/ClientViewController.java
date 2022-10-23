@@ -1,7 +1,7 @@
 package com.crusa.trafficgenerator.view;
 
-import com.crusa.trafficgenerator.ClientTraffic;
-import com.crusa.trafficgenerator.SenderReport;
+import com.crusa.trafficgenerator.controller.ClientTraffic;
+import com.crusa.trafficgenerator.entity.SenderReport;
 import com.crusa.trafficgenerator.protocol.TypeProtocol;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -146,7 +146,6 @@ public class ClientViewController extends ViewController {
 
             public void run() {
                 time--;
-
 
                 Platform.runLater(() -> workingTimeText.setText(Integer.toString(time)));
 

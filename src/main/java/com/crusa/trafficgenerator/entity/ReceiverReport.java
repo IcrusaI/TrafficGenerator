@@ -1,4 +1,4 @@
-package com.crusa.trafficgenerator;
+package com.crusa.trafficgenerator.entity;
 
 import java.util.ArrayList;
 import java.util.List;

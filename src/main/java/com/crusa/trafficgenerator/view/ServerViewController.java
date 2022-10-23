@@ -1,8 +1,7 @@
 package com.crusa.trafficgenerator.view;
 
-import com.crusa.trafficgenerator.ReceiverReport;
-import com.crusa.trafficgenerator.SenderReport;
-import com.crusa.trafficgenerator.ServerTraffic;
+import com.crusa.trafficgenerator.entity.ReceiverReport;
+import com.crusa.trafficgenerator.controller.ServerTraffic;
 import com.crusa.trafficgenerator.protocol.TypeProtocol;
 import javafx.application.Platform;
 import javafx.fxml.FXML;

@@ -1,4 +1,4 @@
-package com.crusa.trafficgenerator;
+package com.crusa.trafficgenerator.entity;
 
 public class SenderReport {
     private int totalSend = 0;

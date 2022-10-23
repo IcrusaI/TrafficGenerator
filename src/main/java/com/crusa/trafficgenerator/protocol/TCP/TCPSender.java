@@ -1,13 +1,11 @@
 package com.crusa.trafficgenerator.protocol.TCP;
 
-import com.crusa.trafficgenerator.SenderReport;
+import com.crusa.trafficgenerator.entity.SenderReport;
 
 import java.io.*;
 import java.net.ConnectException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class TCPSender implements Runnable {
     private int delay;
