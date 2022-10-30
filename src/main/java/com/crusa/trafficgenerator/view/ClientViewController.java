@@ -1,9 +1,11 @@
 package com.crusa.trafficgenerator.view;
 
 import com.crusa.trafficgenerator.controller.ClientTraffic;
+import com.crusa.trafficgenerator.distribution.DistributionEnum;
 import com.crusa.trafficgenerator.entity.SenderReport;
 import com.crusa.trafficgenerator.protocol.TypeProtocol;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -35,7 +37,10 @@ public class ClientViewController extends ViewController {
     private TextField delayText;
 
     @FXML
-    private ComboBox<String> typeCombobox; //todo переименовать в protocol, я ж долбаеб, который сразу не понял этого
+    private ComboBox<String> protocolCombobox;
+
+    @FXML
+    private ComboBox<String> distributionCombobox;
 
     @FXML
     private TextField sentPackagesText;
@@ -44,9 +49,16 @@ public class ClientViewController extends ViewController {
 
     @Override
     protected void start() {
-        typeCombobox.getItems().addAll(TypeProtocol.names());
+        protocolCombobox.getItems().addAll(TypeProtocol.names());
+        distributionCombobox.getItems().addAll(DistributionEnum.methods());
 
         setStartGenerator(false);
+    }
+
+
+    @FXML
+    public void onUpdateDistribution(ActionEvent a) {
+        System.out.println(a.toString());
     }
 
     private void validateForm() {
@@ -56,23 +68,23 @@ public class ClientViewController extends ViewController {
 
         int size, delay;
 
-            try {
-                size = Integer.parseInt(sizeText.getText());
-                delay = Integer.parseInt(delayText.getText());
-            } catch (NumberFormatException e) {
-                throw new RuntimeException("Значения полей \"Размер\" и \"Время генерации\" должны быть числом");
-            }
+        try {
+            size = Integer.parseInt(sizeText.getText());
+            delay = Integer.parseInt(delayText.getText());
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Значения полей \"Размер\" и \"Время генерации\" должны быть числом");
+        }
 
-            if (size < 32 || size > 1500) {
-                throw new RuntimeException("Размер задается в диапазоне 32-1500 байт");
-            }
-            if (delay <= 0) {
-                throw new RuntimeException("Время генерации должно быть больше 0");
-            }
+        if (size < 32 || size > 1500) {
+            throw new RuntimeException("Размер задается в диапазоне 32-1500 байт");
+        }
+        if (delay <= 0) {
+            throw new RuntimeException("Время генерации должно быть больше 0");
+        }
 
-            if (!Arrays.stream(TypeProtocol.names()).toList().contains(typeCombobox.getValue())) {
-                throw new RuntimeException("Неверный тип трафика");
-            }
+        if (!Arrays.stream(TypeProtocol.names()).toList().contains(protocolCombobox.getValue())) {
+            throw new RuntimeException("Неверный тип трафика");
+        }
     }
 
     public Boolean isStartGenerator() {
@@ -85,7 +97,7 @@ public class ClientViewController extends ViewController {
         sizeText.setDisable(startGenerator);
         delayText.setDisable(startGenerator);
         workingTimeText.setDisable(startGenerator);
-        typeCombobox.setDisable(startGenerator);
+        protocolCombobox.setDisable(startGenerator);
         addressText.setDisable(startGenerator);
         sentPackagesText.setText("0");
     }
@@ -125,7 +137,7 @@ public class ClientViewController extends ViewController {
         }
 
         traffic.setDelay(Integer.parseInt(delayText.getText()));
-        traffic.setProtocol(TypeProtocol.valueOf(typeCombobox.getValue()));
+        traffic.setProtocol(TypeProtocol.valueOf(protocolCombobox.getValue()));
         traffic.setSize(Integer.parseInt(sizeText.getText()));
         clientTraffic = traffic;
 
@@ -153,7 +165,6 @@ public class ClientViewController extends ViewController {
                     stopGenerator();
                     timer.cancel();
                     timer.purge();
-                    return;
                 }
             }
         }, 0, 1);
@@ -173,7 +184,7 @@ public class ClientViewController extends ViewController {
                                 .setText(Integer.toString(report.getTotalSend())));
                     }
                 } catch(InterruptedException e) {
-                    System.out.println("interrupted");
+                    System.err.println("interrupted");
                 }
             }
             // После оповещения нас мы будем ждать, пока сможем взять лок
