@@ -17,7 +17,7 @@ public class ErlangDistribution {
      * @param scale параметр масштаба
      * @return сгенерированное значение
      */
-    public double erlang(double shape, double scale)  {
+    public static double erlang(double shape, double scale)  {
         if (shape < 1 && (shape % 1) == 0) {
             throw new RuntimeException("Параметр shape может принимать только положительные целые значения");
         }

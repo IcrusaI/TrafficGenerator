@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
 import java.net.UnknownHostException;
 import java.util.Arrays;
@@ -52,35 +53,99 @@ public class ClientViewController extends ViewController {
         protocolCombobox.getItems().addAll(TypeProtocol.names());
         distributionCombobox.getItems().addAll(DistributionEnum.methods());
 
+        setDistribution("");
         setStartGenerator(false);
     }
 
 
     @FXML
     public void onUpdateDistribution(ActionEvent a) {
-        System.out.println(a.toString());
+        setDistribution(distributionCombobox.getValue());
     }
 
-    private void validateForm() {
+    @FXML
+    private VBox delayVBox;
+    @FXML
+    private VBox erlangVBox;
+    @FXML
+    private TextField erlangShapeText;
+    @FXML
+    private TextField erlangScaleText;
+    private void setDistribution(String distribution) {
+        delayVBox.setDisable(true);
+        delayVBox.setOpacity(0);
+        erlangVBox.setDisable(true);
+        erlangVBox.setOpacity(0);
+
+        switch (distribution) {
+            case "DELAY":
+                delayVBox.setDisable(false);
+                delayVBox.setOpacity(1);
+                break;
+            case "ERLANG":
+                erlangVBox.setDisable(false);
+                erlangVBox.setOpacity(1);
+                break;
+        }
+    }
+
+    private DistributionEnum getDistribution() throws Exception {
+        return switch (distributionCombobox.getValue()) {
+            case "DELAY" -> DistributionEnum.DELAY;
+            case "ERLANG" -> DistributionEnum.ERLANG;
+            default -> throw new Exception("Нет такого");
+        };
+    }
+
+    private void validateForm() throws Exception {
         if (addressText.getText().split(":").length != 2) {
             throw new RuntimeException("Неверно задан адрес сервера");
         }
 
-        int size, delay;
+        int size;
 
         try {
             size = Integer.parseInt(sizeText.getText());
-            delay = Integer.parseInt(delayText.getText());
         } catch (NumberFormatException e) {
-            throw new RuntimeException("Значения полей \"Размер\" и \"Время генерации\" должны быть числом");
+            throw new RuntimeException("Значения поля \"Размер\" должно быть числом");
         }
 
         if (size < 32 || size > 1500) {
             throw new RuntimeException("Размер задается в диапазоне 32-1500 байт");
         }
-        if (delay <= 0) {
-            throw new RuntimeException("Время генерации должно быть больше 0");
+
+        switch (getDistribution()) {
+            case DELAY:
+                int delay;
+
+                try {
+                    delay = Integer.parseInt(delayText.getText());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Значения поля и \"Время генерации\" должно быть числом");
+                }
+
+                if (delay <= 0) {
+                    throw new RuntimeException("Время генерации должно быть больше 0");
+                }
+                break;
+            case ERLANG:
+                double scale;
+
+                try {
+                    scale = Double.parseDouble(erlangScaleText.getText());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Значения поля и \"масштаб\" должно быть числом");
+                }
+                double shape;
+
+                try {
+                    shape = Double.parseDouble(erlangShapeText.getText());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Значения поля и \"форма\" должно быть числом");
+                }
+                break;
         }
+
 
         if (!Arrays.stream(TypeProtocol.names()).toList().contains(protocolCombobox.getValue())) {
             throw new RuntimeException("Неверный тип трафика");
@@ -114,7 +179,7 @@ public class ClientViewController extends ViewController {
     }
 
     @FXML
-    private void startGenerator() {
+    private void startGenerator() throws Exception {
         try {
             validateForm();
         } catch (Exception e) {
@@ -136,7 +201,15 @@ public class ClientViewController extends ViewController {
             throw new RuntimeException(e);
         }
 
-        traffic.setDelay(Integer.parseInt(delayText.getText()));
+        traffic.setDistribution(getDistribution());
+
+        switch (getDistribution()) {
+            case DELAY ->         traffic.setDelay(Integer.parseInt(delayText.getText()));
+            case ERLANG -> {
+                traffic.setShape(Double.parseDouble(erlangShapeText.getText()));
+                traffic.setScale(Double.parseDouble(erlangScaleText.getText()));
+            }
+        }
         traffic.setProtocol(TypeProtocol.valueOf(protocolCombobox.getValue()));
         traffic.setSize(Integer.parseInt(sizeText.getText()));
         clientTraffic = traffic;

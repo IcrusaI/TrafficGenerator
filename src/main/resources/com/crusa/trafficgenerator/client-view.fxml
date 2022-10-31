@@ -41,14 +41,6 @@
                     <Text layoutX="180.0" layoutY="17.0" text="мс" wrappingWidth="74.94921875" />
                 </AnchorPane>
                 <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0">
-                    <Label contentDisplay="RIGHT" text="Задержка">
-                        <graphic>
-                            <TextField fx:id="delayText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
-                        </graphic>
-                    </Label>
-                    <Text layoutX="135.0" layoutY="17.0" text="мс" wrappingWidth="74.94921875" />
-                </AnchorPane>
-                <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0">
                     <VBox>
                         <children>
                             <Label contentDisplay="RIGHT" text="Закон распред.">
@@ -62,21 +54,21 @@
                               <children>
                                            <Label contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0" text="Задержка">
                                                <graphic>
-                                                   <TextField fx:id="delayText12" prefHeight="25.0" prefWidth="71.0" promptText="100" />
+                                                   <TextField fx:id="delayText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
                                                </graphic>
                                            </Label>
                               </children>
                            </VBox>
-                                  <VBox style="-fx-background-color: ffffff;">
+                                  <VBox fx:id="erlangVBox" style="-fx-background-color: ffffff;">
                                       <children>
                                                <Label contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0" text="Форма">
                                                    <graphic>
-                                                       <TextField fx:id="delayText1" prefHeight="25.0" prefWidth="71.0" promptText="100" />
+                                                       <TextField fx:id="erlangShapeText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
                                                    </graphic>
                                                </Label>
                                                <Label contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0" text="Масштаб">
                                                    <graphic>
-                                                       <TextField fx:id="delayText11" prefHeight="25.0" prefWidth="71.0" promptText="100" />
+                                                       <TextField fx:id="erlangScaleText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
                                                    </graphic>
                                                </Label>
                                       </children>

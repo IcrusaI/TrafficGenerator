@@ -1,5 +1,7 @@
 package com.crusa.trafficgenerator.controller;
 
+import com.crusa.trafficgenerator.distribution.DistributionEnum;
+import com.crusa.trafficgenerator.distribution.ErlangDistribution;
 import com.crusa.trafficgenerator.entity.SenderReport;
 import com.crusa.trafficgenerator.protocol.TCP.TCPSender;
 import com.crusa.trafficgenerator.protocol.TypeProtocol;
@@ -14,7 +16,13 @@ public class ClientTraffic {
     private InetAddress address;
     private int port;
     private int size;
+
+    private DistributionEnum distribution;
+    // Задержка
     private int delay;
+    // Эрланг
+    private double shape;
+    private double scale;
     private TypeProtocol protocol;
 
     private Thread thread;
@@ -33,8 +41,18 @@ public class ClientTraffic {
         this.size = size;
     }
 
+    public void setDistribution(DistributionEnum distribution) {
+        this.distribution = distribution;
+    }
     public void setDelay(int delay) {
         this.delay = delay;
+    }
+
+    public void setShape(double shape) {
+        this.shape = shape;
+    }
+    public void setScale(double scale) {
+        this.scale = scale;
     }
 
     public void setProtocol(TypeProtocol protocol) {
@@ -65,7 +83,14 @@ public class ClientTraffic {
         );
 
         UDPSender udpSender = new UDPSender();
-        udpSender.setDelay(delay);
+        udpSender.setDistribution(distribution);
+        switch (distribution) {
+            case DELAY -> udpSender.setDelay(delay);
+            case ERLANG -> {
+                udpSender.setShape(shape);
+                udpSender.setScale(scale);
+            }
+        }
         udpSender.setPacket(packet);
         udpSender.setReport(report);
 

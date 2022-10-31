@@ -1,7 +1,5 @@
 package com.crusa.trafficgenerator.distribution;
 
-import com.crusa.trafficgenerator.protocol.TypeProtocol;
-
 import java.util.Arrays;
 
 public enum DistributionEnum {
