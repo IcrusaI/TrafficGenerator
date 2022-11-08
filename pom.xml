@@ -60,7 +60,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.crusa.trafficgenerator/com.crusa.trafficgenerator.Application</mainClass>
+                            <mainClass>com.crusa.trafficgenerator/com.crusa.trafficgenerator.App</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
