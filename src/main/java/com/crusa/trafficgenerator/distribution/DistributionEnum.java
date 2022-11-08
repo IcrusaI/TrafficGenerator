@@ -4,7 +4,9 @@ import java.util.Arrays;
 
 public enum DistributionEnum {
     DELAY("delay"),
-    ERLANG("erlang");
+    ERLANG("erlang"),
+    EXPONENTIAL("exponential"),
+    UNIFORM("uniform");
 
 
     private final String method;

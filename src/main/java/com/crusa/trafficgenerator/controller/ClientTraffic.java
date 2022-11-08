@@ -23,6 +23,11 @@ public class ClientTraffic {
     // Эрланг
     private double shape;
     private double scale;
+    // exponential
+    private double mean;
+    // uniform
+    private double max;
+    private double min;
     private TypeProtocol protocol;
 
     private Thread thread;
@@ -53,6 +58,16 @@ public class ClientTraffic {
     }
     public void setScale(double scale) {
         this.scale = scale;
+    }
+
+    public void setMean(double mean) {
+        this.mean = mean;
+    }
+    public void setMin(double min) {
+        this.min = min;
+    }
+    public void setMax(double max) {
+        this.max = max;
     }
 
     public void setProtocol(TypeProtocol protocol) {
@@ -89,6 +104,11 @@ public class ClientTraffic {
             case ERLANG -> {
                 udpSender.setShape(shape);
                 udpSender.setScale(scale);
+            }
+            case EXPONENTIAL -> udpSender.setMean(mean);
+            case UNIFORM -> {
+                udpSender.setMin(min);
+                udpSender.setMax(max);
             }
         }
         udpSender.setPacket(packet);

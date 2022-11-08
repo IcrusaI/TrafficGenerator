@@ -2,6 +2,8 @@ package com.crusa.trafficgenerator.protocol.UDP;
 
 import com.crusa.trafficgenerator.distribution.DistributionEnum;
 import com.crusa.trafficgenerator.distribution.ErlangDistribution;
+import com.crusa.trafficgenerator.distribution.ExponentialDistribution;
+import com.crusa.trafficgenerator.distribution.UniformDistribution;
 import com.crusa.trafficgenerator.entity.SenderReport;
 
 import java.io.IOException;
@@ -15,6 +17,9 @@ public class UDPSender implements Runnable {
     // Эрланг
     private double shape;
     private double scale;
+    private double mean;
+    private double min;
+    private double max;
     private DatagramPacket packet;
 
     private SenderReport report;
@@ -35,7 +40,15 @@ public class UDPSender implements Runnable {
     public void setScale(double scale) {
         this.scale = scale;
     }
-
+    public void setMean(double mean) {
+        this.mean = mean;
+    }
+    public void setMin(double min) {
+        this.min = min;
+    }
+    public void setMax(double max) {
+        this.max = max;
+    }
     public void setReport(SenderReport report) {
         this.report = report;
     }
@@ -58,6 +71,8 @@ public class UDPSender implements Runnable {
                 switch (distribution) {
                     case ERLANG -> delay = ErlangDistribution.erlang(shape, scale) * 1000;
                     case DELAY -> delay = this.delay;
+                    case EXPONENTIAL -> delay = ExponentialDistribution.exponential(mean) * 1000;
+                    case UNIFORM -> delay = UniformDistribution.uniform(max, min) * 1000;
                     default -> delay = 0;
                 }
 

@@ -73,6 +73,29 @@
                                                </Label>
                                       </children>
                                   </VBox>
+                           <VBox fx:id="exponentialVBox">
+                              <children>
+                                 <Label contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0" text="Значение">
+                                    <graphic>
+                                       <TextField fx:id="exponentialMeanText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
+                                    </graphic>
+                                 </Label>
+                              </children>
+                           </VBox>
+                           <VBox fx:id="uniformVBox">
+                              <children>
+                                 <Label contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0" text="мин">
+                                    <graphic>
+                                       <TextField fx:id="uniformMinText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
+                                    </graphic>
+                                 </Label>
+                                 <Label contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="32.0" prefWidth="270.0" text="макс">
+                                    <graphic>
+                                       <TextField fx:id="uniformMaxText" prefHeight="25.0" prefWidth="71.0" promptText="100" />
+                                    </graphic>
+                                 </Label>
+                              </children>
+                           </VBox>
                         </children>
                      </AnchorPane>
                         </children>

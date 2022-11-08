@@ -68,14 +68,29 @@ public class ClientViewController extends ViewController {
     @FXML
     private VBox erlangVBox;
     @FXML
+    private VBox exponentialVBox;
+    @FXML
+    private VBox uniformVBox;
+    @FXML
     private TextField erlangShapeText;
     @FXML
     private TextField erlangScaleText;
+    @FXML
+    private TextField exponentialMeanText;
+    @FXML
+    public TextField uniformMaxText;
+    @FXML
+    public TextField uniformMinText;
+
     private void setDistribution(String distribution) {
         delayVBox.setDisable(true);
         delayVBox.setOpacity(0);
         erlangVBox.setDisable(true);
         erlangVBox.setOpacity(0);
+        exponentialVBox.setDisable(true);
+        exponentialVBox.setOpacity(0);
+        uniformVBox.setDisable(true);
+        uniformVBox.setOpacity(0);
 
         switch (distribution) {
             case "DELAY":
@@ -86,6 +101,14 @@ public class ClientViewController extends ViewController {
                 erlangVBox.setDisable(false);
                 erlangVBox.setOpacity(1);
                 break;
+            case "EXPONENTIAL":
+                exponentialVBox.setDisable(false);
+                exponentialVBox.setOpacity(1);
+                break;
+            case "UNIFORM":
+                uniformVBox.setDisable(false);
+                uniformVBox.setOpacity(1);
+                break;
         }
     }
 
@@ -93,6 +116,8 @@ public class ClientViewController extends ViewController {
         return switch (distributionCombobox.getValue()) {
             case "DELAY" -> DistributionEnum.DELAY;
             case "ERLANG" -> DistributionEnum.ERLANG;
+            case "EXPONENTIAL" -> DistributionEnum.EXPONENTIAL;
+            case "UNIFORM" -> DistributionEnum.UNIFORM;
             default -> throw new Exception("Нет такого");
         };
     }
@@ -134,14 +159,40 @@ public class ClientViewController extends ViewController {
                 try {
                     scale = Double.parseDouble(erlangScaleText.getText());
                 } catch (NumberFormatException e) {
-                    throw new RuntimeException("Значения поля и \"масштаб\" должно быть числом");
+                    throw new RuntimeException("Значения поля \"масштаб\" должно быть числом");
                 }
                 double shape;
 
                 try {
                     shape = Double.parseDouble(erlangShapeText.getText());
                 } catch (NumberFormatException e) {
-                    throw new RuntimeException("Значения поля и \"форма\" должно быть числом");
+                    throw new RuntimeException("Значения поля \"форма\" должно быть числом");
+                }
+                break;
+            case EXPONENTIAL:
+                double mean;
+
+                try {
+                    mean = Double.parseDouble(exponentialMeanText.getText());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Значения поля \"значение\" должно быть числом");
+                }
+                break;
+            case UNIFORM:
+                double max;
+
+                try {
+                    max = Double.parseDouble(uniformMaxText.getText());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Значения поля \"макс\" должно быть числом");
+                }
+
+                double min;
+
+                try {
+                    min = Double.parseDouble(uniformMinText.getText());
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException("Значения поля \"мин\" должно быть числом");
                 }
                 break;
         }
@@ -208,6 +259,11 @@ public class ClientViewController extends ViewController {
             case ERLANG -> {
                 traffic.setShape(Double.parseDouble(erlangShapeText.getText()));
                 traffic.setScale(Double.parseDouble(erlangScaleText.getText()));
+            }
+            case EXPONENTIAL -> traffic.setMean(Double.parseDouble(exponentialMeanText.getText()));
+            case UNIFORM -> {
+                traffic.setMax(Double.parseDouble(uniformMaxText.getText()));
+                traffic.setMin(Double.parseDouble(uniformMinText.getText()));
             }
         }
         traffic.setProtocol(TypeProtocol.valueOf(protocolCombobox.getValue()));
