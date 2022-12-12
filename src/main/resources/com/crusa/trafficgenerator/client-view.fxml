@@ -10,6 +10,7 @@
         <children>
             <ToolBar prefHeight="25.0">
                 <Button mnemonicParsing="false" onAction="#backToHome" text="Назад" />
+            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#openNewClient" text="Дублировать" />
                 <Pane HBox.hgrow="ALWAYS" />
                 <AnchorPane prefHeight="25.0" prefWidth="64.0">
                     <Button fx:id="stopButton" defaultButton="true" mnemonicParsing="false" onAction="#stopGenerator" text="Остановить" />
@@ -127,6 +128,14 @@
                         </graphic>
                     </Label>
                     <Text layoutX="153.0" layoutY="18.0" text="пакетов" wrappingWidth="74.94921875" />
+                </AnchorPane>
+                <AnchorPane prefHeight="32.0" prefWidth="270.0">
+                    <Label contentDisplay="RIGHT" text="Объем">
+                        <graphic>
+                            <TextField fx:id="sendVolumeText" editable="false" prefHeight="25.0" prefWidth="71.0" />
+                        </graphic>
+                    </Label>
+                    <Text layoutX="153.0" layoutY="18.0" text="байт" wrappingWidth="74.94921875" />
                 </AnchorPane>
             </VBox>
         </children>

@@ -12,6 +12,9 @@ import java.io.IOException;
 public class Application extends javafx.application.Application {
     private static ViewEnum view = ViewEnum.HOME;
 
+    public static int defaultHeight = 320;
+    public static int defaultWidth = 240;
+
     public static void main(String[] args) {
         if (args.length > 0) {
             if (args[0].equals("-view")) {
@@ -40,7 +43,7 @@ public class Application extends javafx.application.Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(Application.class.getResource(fxmlName));
 
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load(), defaultHeight, defaultWidth);
 
         ViewController controller = fxmlLoader.getController();
         controller.setStage(stage);

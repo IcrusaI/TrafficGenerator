@@ -16,7 +16,6 @@ public class ClientTraffic {
     private InetAddress address;
     private int port;
     private int size;
-
     private DistributionEnum distribution;
     // Задержка
     private int delay;
@@ -34,6 +33,10 @@ public class ClientTraffic {
 
     private SenderReport report;
 
+    public ClientTraffic() {
+        report = new SenderReport();
+    }
+
     public void setAddress(String address) throws UnknownHostException {
         this.address = InetAddress.getByName(address);
     }
@@ -44,6 +47,10 @@ public class ClientTraffic {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public void setDistribution(DistributionEnum distribution) {
@@ -77,10 +84,11 @@ public class ClientTraffic {
     public synchronized SenderReport getReport() {
         return report;
     }
+    public synchronized void setReport(SenderReport report) {
+        this.report = report;
+    }
 
     public void run() {
-        report = new SenderReport();
-
         switch (protocol) {
             case UDP -> UDP();
             case TCP -> TCP();

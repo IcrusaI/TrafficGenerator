@@ -38,6 +38,9 @@ public class ClientViewController extends ViewController {
     private TextField delayText;
 
     @FXML
+    private TextField sendVolumeText;
+
+    @FXML
     private ComboBox<String> protocolCombobox;
 
     @FXML
@@ -53,14 +56,14 @@ public class ClientViewController extends ViewController {
         protocolCombobox.getItems().addAll(TypeProtocol.names());
         distributionCombobox.getItems().addAll(DistributionEnum.methods());
 
-        setDistribution("");
+        setDistribution();
         setStartGenerator(false);
     }
 
 
     @FXML
-    public void onUpdateDistribution(ActionEvent a) {
-        setDistribution(distributionCombobox.getValue());
+    public void onUpdateDistribution(ActionEvent a) throws Exception {
+        setDistribution(getDistribution());
     }
 
     @FXML
@@ -82,7 +85,7 @@ public class ClientViewController extends ViewController {
     @FXML
     public TextField uniformMinText;
 
-    private void setDistribution(String distribution) {
+    private void setDistribution() {
         delayVBox.setDisable(true);
         delayVBox.setOpacity(0);
         erlangVBox.setDisable(true);
@@ -91,24 +94,27 @@ public class ClientViewController extends ViewController {
         exponentialVBox.setOpacity(0);
         uniformVBox.setDisable(true);
         uniformVBox.setOpacity(0);
+    }
+    private void setDistribution(DistributionEnum distribution) {
+        setDistribution();
 
         switch (distribution) {
-            case "DELAY":
+            case DELAY -> {
                 delayVBox.setDisable(false);
                 delayVBox.setOpacity(1);
-                break;
-            case "ERLANG":
+            }
+            case ERLANG -> {
                 erlangVBox.setDisable(false);
                 erlangVBox.setOpacity(1);
-                break;
-            case "EXPONENTIAL":
+            }
+            case EXPONENTIAL -> {
                 exponentialVBox.setDisable(false);
                 exponentialVBox.setOpacity(1);
-                break;
-            case "UNIFORM":
+            }
+            case UNIFORM -> {
                 uniformVBox.setDisable(false);
                 uniformVBox.setOpacity(1);
-                break;
+            }
         }
     }
 
@@ -215,7 +221,11 @@ public class ClientViewController extends ViewController {
         workingTimeText.setDisable(startGenerator);
         protocolCombobox.setDisable(startGenerator);
         addressText.setDisable(startGenerator);
-        sentPackagesText.setText("0");
+        if (clientTraffic != null) {
+            sentPackagesText.setText(Integer.toString(clientTraffic.getReport().getTotalSend()));
+        } else {
+            sentPackagesText.setText("0");
+        }
     }
 
     @FXML
@@ -224,7 +234,6 @@ public class ClientViewController extends ViewController {
 
         if (clientTraffic != null) {
             clientTraffic.destroy();
-            clientTraffic = null;
         }
         System.gc();
     }
@@ -268,6 +277,11 @@ public class ClientViewController extends ViewController {
         }
         traffic.setProtocol(TypeProtocol.valueOf(protocolCombobox.getValue()));
         traffic.setSize(Integer.parseInt(sizeText.getText()));
+
+        if (clientTraffic != null) {
+            traffic.setReport(clientTraffic.getReport());
+        }
+
         clientTraffic = traffic;
 
         if (Integer.parseInt(workingTimeText.getText()) > 0) {
@@ -309,8 +323,11 @@ public class ClientViewController extends ViewController {
                     while (true) {
                         report.wait();
 
-                        Platform.runLater(() -> sentPackagesText
-                                .setText(Integer.toString(report.getTotalSend())));
+                        Platform.runLater(() -> {
+                            sentPackagesText
+                                    .setText(Integer.toString(report.getTotalSend()));
+                            sendVolumeText.setText(Integer.toString(report.getTotalSend() * clientTraffic.getSize()));
+                        });
                     }
                 } catch(InterruptedException e) {
                     System.err.println("interrupted");
@@ -328,5 +345,9 @@ public class ClientViewController extends ViewController {
     private void backToHome() throws Exception {
         stopGenerator();
         setView(ViewEnum.HOME);
+    }
+    @FXML
+    private void openNewClient() throws Exception {
+        newWindowView(ViewEnum.CLIENT);
     }
 }

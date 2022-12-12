@@ -24,13 +24,30 @@ public abstract class ViewController {
         FXMLLoader loader = new FXMLLoader(getFXMLView(view));
         Parent root = (Parent) loader.load();
 
+        createWindow(loader, root, stage);
+    }
+
+    protected void newWindowView(ViewEnum view) throws Exception {
+        FXMLLoader loader = new FXMLLoader(getFXMLView(view));
+        Parent root = (Parent) loader.load();
+        Stage stage = new Stage();
+
+        createWindow(loader, root, stage);
+    }
+
+    private void createWindow(FXMLLoader loader, Parent root, Stage stage) {
         ViewController controller = loader.getController();
         controller.setStage(stage);
         controller.start();
 
         Scene oldScene = stage.getScene();
 
-        Scene scene = new Scene(root, oldScene.getWidth(), oldScene.getHeight());
+        Scene scene;
+        if (oldScene != null) {
+            scene = new Scene(root, oldScene.getWidth(), oldScene.getHeight());
+        } else {
+            scene = new Scene(root, Application.defaultWidth, Application.defaultHeight);
+        }
         stage.setScene(scene);
         stage.show();
     }
