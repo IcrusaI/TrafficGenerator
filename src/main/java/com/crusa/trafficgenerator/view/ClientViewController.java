@@ -15,8 +15,10 @@ import javafx.scene.layout.VBox;
 
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientViewController extends ViewController {
     @FXML
@@ -33,6 +35,8 @@ public class ClientViewController extends ViewController {
 
     @FXML
     private TextField workingTimeText;
+    @FXML
+    private TextField workingSizeText;
 
     @FXML
     private TextField delayText;
@@ -124,7 +128,7 @@ public class ClientViewController extends ViewController {
             case "ERLANG" -> DistributionEnum.ERLANG;
             case "EXPONENTIAL" -> DistributionEnum.EXPONENTIAL;
             case "UNIFORM" -> DistributionEnum.UNIFORM;
-            default -> throw new Exception("Нет такого");
+            default -> null;
         };
     }
 
@@ -284,7 +288,7 @@ public class ClientViewController extends ViewController {
 
         clientTraffic = traffic;
 
-        if (Integer.parseInt(workingTimeText.getText()) > 0) {
+        if (!workingTimeText.getText().equals("") && Integer.parseInt(workingTimeText.getText()) > 0) {
             timerToStop();
         }
 
@@ -320,6 +324,9 @@ public class ClientViewController extends ViewController {
                 try {
                     SenderReport report = clientTraffic.getReport();
 
+
+                    final int[] allSize = {Integer.parseInt(workingSizeText.getText())};
+
                     while (true) {
                         report.wait();
 
@@ -327,6 +334,17 @@ public class ClientViewController extends ViewController {
                             sentPackagesText
                                     .setText(Integer.toString(report.getTotalSend()));
                             sendVolumeText.setText(Integer.toString(report.getTotalSend() * clientTraffic.getSize()));
+
+                            if (!workingSizeText.getText().equals("")) {
+                                int size = Integer.parseInt(sizeText.getText());
+                                if (size > 0) {
+                                    allSize[0] = allSize[0]-size;
+                                    workingSizeText.setText(String.valueOf(allSize[0]));
+                                    if (allSize[0] - size < 0) {
+                                        stopGenerator();
+                                    }
+                                }
+                            }
                         });
                     }
                 } catch(InterruptedException e) {
@@ -349,5 +367,18 @@ public class ClientViewController extends ViewController {
     @FXML
     private void openNewClient() throws Exception {
         newWindowView(ViewEnum.CLIENT);
+    }
+
+    @FXML
+    private void clear() throws Exception {
+        sizeText.clear();
+        delayText.clear();
+        workingTimeText.clear();
+        addressText.clear();
+        protocolCombobox.setValue(null);
+        setDistribution();
+        distributionCombobox.setValue(null);
+        sendVolumeText.clear();
+        sentPackagesText.clear();
     }
 }
