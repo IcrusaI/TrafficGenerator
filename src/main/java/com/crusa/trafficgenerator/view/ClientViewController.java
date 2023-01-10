@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ClientViewController extends ViewController {
@@ -291,6 +292,9 @@ public class ClientViewController extends ViewController {
         if (!workingTimeText.getText().equals("") && Integer.parseInt(workingTimeText.getText()) > 0) {
             timerToStop();
         }
+
+        TimeUnit.SECONDS.sleep(7);
+        System.out.printf("я ебал овцу");
 
         clientTraffic.run();
 
