@@ -29,7 +29,7 @@ public class TCPSender implements Runnable {
     public void run() {
         Socket clientSocket = null;
 
-        while (true) {
+        while(!Thread.interrupted()) {
 
             try {
                 clientSocket = new Socket(packet.getAddress(), packet.getPort());
@@ -66,6 +66,8 @@ public class TCPSender implements Runnable {
                 break;
             }
         }
+
+        Thread.currentThread().interrupt();
     }
 }
 

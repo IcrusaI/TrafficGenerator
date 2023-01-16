@@ -324,9 +324,6 @@ public class ClientViewController extends ViewController {
                 try {
                     SenderReport report = clientTraffic.getReport();
 
-
-                    final int[] allSize = {Integer.parseInt(workingSizeText.getText())};
-
                     while (true) {
                         report.wait();
 
@@ -337,6 +334,8 @@ public class ClientViewController extends ViewController {
 
                             if (!workingSizeText.getText().equals("")) {
                                 int size = Integer.parseInt(sizeText.getText());
+                                final int[] allSize = {Integer.parseInt(workingSizeText.getText())};
+
                                 if (size > 0) {
                                     allSize[0] = allSize[0]-size;
                                     workingSizeText.setText(String.valueOf(allSize[0]));
